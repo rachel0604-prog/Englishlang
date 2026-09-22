@@ -1,5 +1,5 @@
-export const REMINDER_TITLE = "Case File";
-export const REMINDER_BODY = "該進 Case File 了——今天的任務等你解鎖";
+export const REMINDER_TITLE = "LIZZAREA";
+export const REMINDER_BODY = "Time for your Case File — today's task is waiting to be unlocked.";
 
 export function isNotificationSupported(): boolean {
   return typeof window !== "undefined" && "Notification" in window;

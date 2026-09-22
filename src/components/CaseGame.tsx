@@ -85,8 +85,8 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
 
   if (rounds.length === 0) {
     return (
-      <p className="text-sm text-parchment-200">
-        本週尚無題目內容，請先於 <code>/admin</code> 匯入。
+      <p className="text-sm text-ink-muted">
+        No rounds for this week yet. Import content in <code>/admin</code> first.
       </p>
     );
   }
@@ -94,18 +94,18 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
   if (allSolved) {
     const code = rounds.map((r) => r.round.code_fragment).join("");
     return (
-      <div className="rounded-lg border border-accent bg-parchment-100 p-6 text-center text-ink">
-        <p className="font-display text-xs text-navy-800">案件已解鎖</p>
+      <div className="rounded-lg border border-sky-600 bg-cream-100 p-6 text-center text-ink">
+        <p className="font-display text-xs text-sky-700">Case Unlocked</p>
         <h1 className="mt-2 text-xl">{weekTitle}</h1>
-        <p className="mt-4 text-sm">本週密卷解鎖碼</p>
-        <p className="font-display mt-2 text-3xl tracking-[0.3em] text-navy-900">
+        <p className="mt-4 text-sm">This week&rsquo;s unlock code</p>
+        <p className="font-display mt-2 text-3xl tracking-[0.3em] text-sky-700">
           {code}
         </p>
         <Link
           href="/"
-          className="mt-6 inline-block rounded-md bg-navy-800 px-4 py-2 text-sm font-medium text-parchment-100"
+          className="mt-6 inline-block rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white"
         >
-          回首頁
+          Back to Home
         </Link>
       </div>
     );
@@ -115,29 +115,29 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between text-xs text-parchment-200">
+      <div className="flex items-center justify-between text-xs text-ink-muted">
         <span className="font-display">{current.caseTitle}</span>
         <span>
-          {solvedCount} / {rounds.length} 已解鎖
+          {solvedCount} / {rounds.length} unlocked
         </span>
       </div>
 
-      <div className="rounded-lg border border-navy-700 bg-parchment-100 p-5 text-ink">
+      <div className="rounded-lg border border-cream-200 bg-cream-100 p-5 text-ink">
         <p
-          className="text-lg leading-relaxed [&_mark]:bg-accent/40 [&_mark]:px-1 [&_mark]:font-semibold"
+          className="text-lg leading-relaxed [&_mark]:bg-sky-300 [&_mark]:px-1 [&_mark]:font-semibold"
           dangerouslySetInnerHTML={{ __html: current.round.sentence_html }}
         />
 
         {current.round.hint_text && (
           <button
             onClick={() => setShowHint((v) => !v)}
-            className="mt-3 text-xs text-navy-700 underline underline-offset-2"
+            className="mt-3 text-xs text-sky-700 underline underline-offset-2"
           >
-            {showHint ? "隱藏線索" : "顯示線索"}
+            {showHint ? "Hide hint" : "Show hint"}
           </button>
         )}
         {showHint && current.round.hint_text && (
-          <p className="mt-2 text-sm text-navy-700">{current.round.hint_text}</p>
+          <p className="mt-2 text-sm text-sky-700">{current.round.hint_text}</p>
         )}
       </div>
 
@@ -145,11 +145,11 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
         {current.round.options.map((option, i) => {
           const isSelected = selected === i;
           const isCorrectOption = i === current.round.correct_index;
-          let stateClass = "border-navy-700 bg-navy-900 text-parchment-100";
+          let stateClass = "border-sky-300 bg-sky-100 text-ink";
           if (feedback && isSelected && isCorrectOption) {
-            stateClass = "border-green-600 bg-green-900/40 text-parchment-100";
+            stateClass = "border-green-600 bg-green-50 text-ink";
           } else if (feedback && isSelected && !isCorrectOption) {
-            stateClass = "border-red-600 bg-red-900/40 text-parchment-100";
+            stateClass = "border-red-600 bg-red-50 text-ink";
           }
 
           return (
@@ -159,7 +159,7 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
               disabled={feedback === "correct"}
               className={`rounded-md border px-4 py-3 text-left text-sm transition-colors ${stateClass}`}
             >
-              <span className="font-display mr-2 text-accent">
+              <span className="font-display mr-2 text-sky-700">
                 {String.fromCharCode(65 + i)}
               </span>
               {option}
@@ -169,22 +169,22 @@ export default function CaseGame({ weekTitle, cases, initialProgress }: CaseGame
       </div>
 
       {feedback === "wrong" && (
-        <p className="text-sm text-red-400">答錯了，再試一次。</p>
+        <p className="text-sm text-red-600">Not quite — try again.</p>
       )}
 
       {feedback === "correct" && (
-        <div className="rounded-lg border border-accent bg-navy-900 p-4">
-          <p className="text-sm text-parchment-200">
-            解鎖密碼片段：
-            <span className="font-display ml-2 text-lg text-accent">
+        <div className="rounded-lg border border-sky-600 bg-sky-50 p-4">
+          <p className="text-sm text-ink-muted">
+            Unlock code fragment:
+            <span className="font-display ml-2 text-lg text-sky-700">
               {current.round.code_fragment}
             </span>
           </p>
           <button
             onClick={goNext}
-            className="mt-3 rounded-md bg-accent px-4 py-2 text-sm font-medium text-navy-950"
+            className="mt-3 rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white"
           >
-            下一題
+            Next
           </button>
         </div>
       )}

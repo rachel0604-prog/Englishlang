@@ -1,31 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --color-navy-950: #0f1729;
-  --color-navy-900: #16213a;
-  --color-navy-800: #1f2f4d;
-  --color-navy-700: #2c4468;
-  --color-parchment-50: #fdfaf1;
-  --color-parchment-100: #f6edd8;
-  --color-parchment-200: #ecdfbd;
-  --color-ink: #2a2118;
-  --color-accent: #b8863b;
+  --color-cream-50: #fffbf0;
+  --color-cream-100: #fdf3d9;
+  --color-cream-200: #f7e4b0;
+  --color-sky-50: #eaf6fb;
+  --color-sky-100: #d6eef9;
+  --color-sky-300: #a8dcef;
+  --color-sky-600: #2f97c4;
+  --color-sky-700: #22738f;
+  --color-ink: #2e4459;
+  --color-ink-muted: #6b8194;
+  --color-accent: var(--color-sky-600);
 
-  --background: var(--color-navy-950);
-  --foreground: var(--color-parchment-100);
+  --background: var(--color-cream-50);
+  --foreground: var(--color-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-navy-950: var(--color-navy-950);
-  --color-navy-900: var(--color-navy-900);
-  --color-navy-800: var(--color-navy-800);
-  --color-navy-700: var(--color-navy-700);
-  --color-parchment-50: var(--color-parchment-50);
-  --color-parchment-100: var(--color-parchment-100);
-  --color-parchment-200: var(--color-parchment-200);
+  --color-cream-50: var(--color-cream-50);
+  --color-cream-100: var(--color-cream-100);
+  --color-cream-200: var(--color-cream-200);
+  --color-sky-50: var(--color-sky-50);
+  --color-sky-100: var(--color-sky-100);
+  --color-sky-300: var(--color-sky-300);
+  --color-sky-600: var(--color-sky-600);
+  --color-sky-700: var(--color-sky-700);
   --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
   --color-accent: var(--color-accent);
   --font-display: var(--font-special-elite);
   --font-body: var(--font-lora);

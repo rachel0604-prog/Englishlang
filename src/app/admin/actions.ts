@@ -16,34 +16,34 @@ export async function submitWeekContent(
 
   const expectedPin = process.env.ADMIN_PIN;
   if (!expectedPin) {
-    return { status: "error", message: "伺服器尚未設定 ADMIN_PIN，請先在 .env.local 加入。" };
+    return { status: "error", message: "ADMIN_PIN isn't set on the server — add it to .env.local first." };
   }
   if (pin !== expectedPin) {
-    return { status: "error", message: "PIN 碼錯誤。" };
+    return { status: "error", message: "Incorrect PIN." };
   }
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(jsonText);
   } catch {
-    return { status: "error", message: "JSON 格式錯誤，請確認貼上的內容是合法 JSON。" };
+    return { status: "error", message: "Invalid JSON — please check that the pasted content is valid JSON." };
   }
 
   const validation = validateWeekInput(parsed);
   if (!validation.ok) {
-    return { status: "error", message: `內容格式錯誤：${validation.error}` };
+    return { status: "error", message: `Invalid content: ${validation.error}` };
   }
 
   try {
     const result = await importWeekContent(validation.value);
     return {
       status: "success",
-      message: `已匯入 Week ${validation.value.week_number}：${result.caseCount} 個案件、共 ${result.roundCount} 題，狀態已設為 active。`,
+      message: `Imported Week ${validation.value.week_number}: ${result.caseCount} case(s), ${result.roundCount} round(s) total. Status set to active.`,
     };
   } catch (err) {
     return {
       status: "error",
-      message: err instanceof Error ? err.message : "寫入資料庫時發生未知錯誤。",
+      message: err instanceof Error ? err.message : "Unknown error while writing to the database.",
     };
   }
 }

@@ -155,3 +155,16 @@ export async function getStreakDays(): Promise<number> {
 
   return streak;
 }
+
+/** Total words ever solved, across all weeks — not just the active one. */
+export async function getTotalWordsLearned(): Promise<number> {
+  const supabase = getSupabaseServerClient();
+  if (!supabase) return 0;
+
+  const { count } = await supabase
+    .from("progress")
+    .select("id", { count: "exact", head: true })
+    .eq("is_solved", true);
+
+  return count ?? 0;
+}

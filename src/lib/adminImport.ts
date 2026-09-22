@@ -27,34 +27,34 @@ export type ValidationResult =
 
 export function validateWeekInput(raw: unknown): ValidationResult {
   if (typeof raw !== "object" || raw === null) {
-    return { ok: false, error: "JSON 最外層必須是一個物件" };
+    return { ok: false, error: "The top level of the JSON must be an object" };
   }
   const data = raw as Record<string, unknown>;
 
   if (typeof data.week_number !== "number" || !Number.isInteger(data.week_number)) {
-    return { ok: false, error: "week_number 必須是整數" };
+    return { ok: false, error: "week_number must be an integer" };
   }
   if (typeof data.theme_title !== "string" || data.theme_title.trim() === "") {
-    return { ok: false, error: "theme_title 必須是非空字串" };
+    return { ok: false, error: "theme_title must be a non-empty string" };
   }
   if (data.source_note !== undefined && typeof data.source_note !== "string") {
-    return { ok: false, error: "source_note 必須是字串" };
+    return { ok: false, error: "source_note must be a string" };
   }
   if (!Array.isArray(data.cases) || data.cases.length === 0) {
-    return { ok: false, error: "cases 必須是至少一筆的陣列" };
+    return { ok: false, error: "cases must be an array with at least one item" };
   }
 
   const cases: ImportCaseInput[] = [];
   for (let ci = 0; ci < data.cases.length; ci++) {
     const rawCase = data.cases[ci] as Record<string, unknown>;
     if (typeof rawCase !== "object" || rawCase === null) {
-      return { ok: false, error: `cases[${ci}] 必須是物件` };
+      return { ok: false, error: `cases[${ci}] must be an object` };
     }
     if (typeof rawCase.case_title !== "string" || rawCase.case_title.trim() === "") {
-      return { ok: false, error: `cases[${ci}].case_title 必須是非空字串` };
+      return { ok: false, error: `cases[${ci}].case_title must be a non-empty string` };
     }
     if (!Array.isArray(rawCase.rounds) || rawCase.rounds.length === 0) {
-      return { ok: false, error: `cases[${ci}].rounds 必須是至少一筆的陣列` };
+      return { ok: false, error: `cases[${ci}].rounds must be an array with at least one item` };
     }
 
     const rounds: ImportRoundInput[] = [];
@@ -62,23 +62,23 @@ export function validateWeekInput(raw: unknown): ValidationResult {
       const r = rawCase.rounds[ri] as Record<string, unknown>;
       const path = `cases[${ci}].rounds[${ri}]`;
       if (typeof r !== "object" || r === null) {
-        return { ok: false, error: `${path} 必須是物件` };
+        return { ok: false, error: `${path} must be an object` };
       }
       if (typeof r.target_word !== "string" || r.target_word.trim() === "") {
-        return { ok: false, error: `${path}.target_word 必須是非空字串` };
+        return { ok: false, error: `${path}.target_word must be a non-empty string` };
       }
       if (typeof r.sentence_html !== "string" || r.sentence_html.trim() === "") {
-        return { ok: false, error: `${path}.sentence_html 必須是非空字串` };
+        return { ok: false, error: `${path}.sentence_html must be a non-empty string` };
       }
       if (r.hint_text !== undefined && r.hint_text !== null && typeof r.hint_text !== "string") {
-        return { ok: false, error: `${path}.hint_text 必須是字串` };
+        return { ok: false, error: `${path}.hint_text must be a string` };
       }
       if (
         !Array.isArray(r.options) ||
         r.options.length !== 4 ||
         !r.options.every((o) => typeof o === "string" && o.trim() !== "")
       ) {
-        return { ok: false, error: `${path}.options 必須是 4 個非空字串的陣列` };
+        return { ok: false, error: `${path}.options must be an array of 4 non-empty strings` };
       }
       if (
         typeof r.correct_index !== "number" ||
@@ -86,10 +86,10 @@ export function validateWeekInput(raw: unknown): ValidationResult {
         r.correct_index < 0 ||
         r.correct_index > 3
       ) {
-        return { ok: false, error: `${path}.correct_index 必須是 0-3 的整數` };
+        return { ok: false, error: `${path}.correct_index must be an integer from 0-3` };
       }
       if (typeof r.code_fragment !== "string" || r.code_fragment.trim() === "") {
-        return { ok: false, error: `${path}.code_fragment 必須是非空字串` };
+        return { ok: false, error: `${path}.code_fragment must be a non-empty string` };
       }
 
       rounds.push({
@@ -140,13 +140,13 @@ export async function importWeekContent(input: ImportWeekInput): Promise<ImportR
       .from("weeks")
       .update({ theme_title: input.theme_title, status: "active" })
       .eq("id", weekId);
-    if (updateError) throw new Error(`更新 weeks 失敗：${updateError.message}`);
+    if (updateError) throw new Error(`Failed to update weeks: ${updateError.message}`);
 
     const { error: deleteError } = await supabase
       .from("cases")
       .delete()
       .eq("week_id", weekId);
-    if (deleteError) throw new Error(`清除舊 cases 失敗：${deleteError.message}`);
+    if (deleteError) throw new Error(`Failed to clear old cases: ${deleteError.message}`);
   } else {
     const { data: inserted, error: insertError } = await supabase
       .from("weeks")
@@ -159,7 +159,7 @@ export async function importWeekContent(input: ImportWeekInput): Promise<ImportR
       .select("id")
       .single();
     if (insertError || !inserted) {
-      throw new Error(`新增 weeks 失敗：${insertError?.message ?? "unknown error"}`);
+      throw new Error(`Failed to insert weeks: ${insertError?.message ?? "unknown error"}`);
     }
     weekId = inserted.id;
   }
@@ -177,7 +177,7 @@ export async function importWeekContent(input: ImportWeekInput): Promise<ImportR
       .select("id")
       .single();
     if (caseError || !insertedCase) {
-      throw new Error(`新增 case「${c.case_title}」失敗：${caseError?.message ?? "unknown error"}`);
+      throw new Error(`Failed to insert case "${c.case_title}": ${caseError?.message ?? "unknown error"}`);
     }
 
     const roundsPayload = c.rounds.map((r, i) => ({
@@ -193,7 +193,7 @@ export async function importWeekContent(input: ImportWeekInput): Promise<ImportR
 
     const { error: roundsError } = await supabase.from("rounds").insert(roundsPayload);
     if (roundsError) {
-      throw new Error(`新增 rounds 失敗（case「${c.case_title}」）：${roundsError.message}`);
+      throw new Error(`Failed to insert rounds for case "${c.case_title}": ${roundsError.message}`);
     }
     roundCount += roundsPayload.length;
   }

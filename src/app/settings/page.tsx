@@ -11,7 +11,7 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <p className="font-display text-xs text-accent">SETTINGS</p>
-        <h1 className="text-lg">設定</h1>
+        <h1 className="text-lg">Settings</h1>
       </div>
       <SettingsForm initialSettings={settings} />
     </div>

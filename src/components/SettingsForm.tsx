@@ -11,10 +11,10 @@ import {
 import type { Settings } from "@/lib/types";
 
 const PERMISSION_LABEL: Record<string, string> = {
-  granted: "已授權",
-  denied: "已拒絕（請至瀏覽器網站設定手動開啟）",
-  default: "尚未授權",
-  unsupported: "此瀏覽器不支援通知",
+  granted: "Granted",
+  denied: "Denied (enable it in your browser's site settings)",
+  default: "Not enabled yet",
+  unsupported: "Not supported in this browser",
 };
 
 export default function SettingsForm({ initialSettings }: { initialSettings: Settings }) {
@@ -53,7 +53,7 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
       .eq("id", 1);
 
     if (error) {
-      setMessage(`儲存失敗：${error.message}`);
+      setMessage(`Save failed: ${error.message}`);
       setSaving(false);
       return;
     }
@@ -65,11 +65,11 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
         : false;
       setMessage(
         scheduled
-          ? "已儲存，並排定兩則提醒通知。"
-          : "已儲存。此瀏覽器不支援預先排程通知，開啟 App 時若已過提醒時間會即時提醒；建議另外在手機的提醒事項 App 設定備援提醒。"
+          ? "Saved, and both reminders are scheduled."
+          : "Saved. This browser doesn't support pre-scheduled notifications — you'll get a reminder the next time you open the app after a reminder time. Consider also setting a backup reminder in your phone's Reminders app."
       );
     } else {
-      setMessage("已儲存提醒時間。要收到通知，請先開啟通知授權。");
+      setMessage("Reminder times saved. Enable notifications above to actually receive them.");
     }
     setSaving(false);
   }
@@ -90,42 +90,42 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
 
     setClearing(false);
     setClearConfirming(false);
-    setMessage(error ? `清除失敗：${error.message}` : "已清除全部進度。");
+    setMessage(error ? `Clear failed: ${error.message}` : "All progress has been cleared.");
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="rounded-lg border border-navy-700 bg-navy-900 p-5">
-        <p className="font-display text-xs text-accent">通知</p>
-        <p className="mt-2 text-sm text-parchment-200">
-          通知狀態：{PERMISSION_LABEL[permission] ?? permission}
+      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
+        <p className="font-display text-xs text-sky-700">Notifications</p>
+        <p className="mt-2 text-sm text-ink-muted">
+          Status: {PERMISSION_LABEL[permission] ?? permission}
         </p>
         {permission !== "granted" && permission !== "unsupported" && (
           <button
             onClick={handleEnableNotifications}
-            className="mt-3 rounded-md bg-accent px-4 py-2 text-sm font-medium text-navy-950"
+            className="mt-3 rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white"
           >
-            開啟通知授權
+            Enable Notifications
           </button>
         )}
 
         <div className="mt-4 flex flex-col gap-3">
-          <label className="flex items-center justify-between text-sm">
-            <span>早上提醒</span>
+          <label className="flex items-center justify-between text-sm text-ink">
+            <span>Morning reminder</span>
             <input
               type="time"
               value={morningTime}
               onChange={(e) => setMorningTime(e.target.value)}
-              className="rounded-md border border-navy-700 bg-navy-950 px-3 py-1.5 text-parchment-100"
+              className="rounded-md border border-sky-300 bg-cream-50 px-3 py-1.5 text-ink"
             />
           </label>
-          <label className="flex items-center justify-between text-sm">
-            <span>晚上提醒</span>
+          <label className="flex items-center justify-between text-sm text-ink">
+            <span>Evening reminder</span>
             <input
               type="time"
               value={eveningTime}
               onChange={(e) => setEveningTime(e.target.value)}
-              className="rounded-md border border-navy-700 bg-navy-950 px-3 py-1.5 text-parchment-100"
+              className="rounded-md border border-sky-300 bg-cream-50 px-3 py-1.5 text-ink"
             />
           </label>
         </div>
@@ -133,37 +133,41 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
         <button
           onClick={handleSave}
           disabled={saving}
-          className="mt-4 rounded-md bg-accent px-4 py-2 text-sm font-medium text-navy-950 disabled:opacity-50"
+          className="mt-4 rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {saving ? "儲存中..." : "儲存設定"}
+          {saving ? "Saving..." : "Save Settings"}
         </button>
 
-        <p className="mt-3 text-xs text-parchment-200">
-          通知內容固定為：「該進 Case File 了——今天的任務等你解鎖」。部分瀏覽器（尤其手機
-          Safari）不支援預先排程通知，建議另外在手機的提醒事項 App 設定備援提醒。
+        <p className="mt-3 text-xs text-ink-muted">
+          The reminder text is fixed: &ldquo;Time for your Case File — today&rsquo;s task is
+          waiting to be unlocked.&rdquo; Some browsers (especially mobile Safari) don&rsquo;t
+          support pre-scheduled notifications — consider also setting a backup reminder in your
+          phone&rsquo;s Reminders app.
         </p>
       </section>
 
-      <section className="rounded-lg border border-navy-700 bg-navy-900 p-5">
-        <p className="font-display text-xs text-accent">清除進度</p>
-        <p className="mt-2 text-sm text-parchment-200">
-          將所有題目的解鎖狀態重設為未解鎖，此動作無法復原。
+      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
+        <p className="font-display text-xs text-sky-700">Clear Progress</p>
+        <p className="mt-2 text-sm text-ink-muted">
+          Resets every round back to unsolved. This cannot be undone.
         </p>
         <button
           onClick={handleClearProgress}
           disabled={clearing}
           className={`mt-3 rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50 ${
-            clearConfirming
-              ? "bg-red-700 text-parchment-100"
-              : "bg-navy-700 text-parchment-100"
+            clearConfirming ? "bg-red-600 text-white" : "bg-sky-600 text-white"
           }`}
         >
-          {clearing ? "清除中..." : clearConfirming ? "確定要清除全部進度？再按一次確認" : "清除進度"}
+          {clearing
+            ? "Clearing..."
+            : clearConfirming
+              ? "Clear all progress? Click again to confirm"
+              : "Clear Progress"}
         </button>
       </section>
 
       {message && (
-        <div className="rounded-md border border-navy-700 bg-navy-900 px-4 py-3 text-sm text-parchment-100">
+        <div className="rounded-md border border-sky-300 bg-sky-50 px-4 py-3 text-sm text-ink">
           {message}
         </div>
       )}

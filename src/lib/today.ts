@@ -8,41 +8,41 @@ export interface DailyTask {
 
 const WEEKDAY_TASKS: Record<number, Omit<DailyTask, "day">> = {
   1: {
-    label: "週一",
-    title: "精讀生字圈選",
-    description: "精讀本週文章，圈選出生字並標記語境線索。",
+    label: "Monday",
+    title: "Close Reading & Word Circling",
+    description: "Read this week's article closely and circle unfamiliar words.",
     isCaseDay: false,
   },
   2: {
-    label: "週二",
-    title: "字根拆解",
-    description: "拆解生字的字根、字首、字尾，建立詞源筆記。",
+    label: "Tuesday",
+    title: "Root Word Breakdown",
+    description: "Break each word into its roots, prefixes, and suffixes; build an etymology note.",
     isCaseDay: false,
   },
   3: {
-    label: "週三",
-    title: "精聽＋仿寫",
-    description: "精聽本週素材並仿寫句型，練習道地表達。",
+    label: "Wednesday",
+    title: "Listening & Shadow Writing",
+    description: "Listen closely to this week's material and shadow-write the sentence patterns.",
     isCaseDay: false,
   },
   4: {
-    label: "週四",
-    title: "間隔複習＋口說錄音摘要",
-    description: "間隔複習先前單字，錄音口說摘要本週主題。",
+    label: "Thursday",
+    title: "Spaced Review & Speaking Summary",
+    description: "Review earlier words on a spaced schedule and record a spoken summary of the theme.",
     isCaseDay: false,
   },
   5: {
-    label: "週五",
-    title: "寫作產出＋案件解謎",
-    description: "完成寫作產出，並進入本週案件解謎解鎖密碼。",
+    label: "Friday",
+    title: "Writing & Case File",
+    description: "Finish a writing piece, then unlock this week's case file.",
     isCaseDay: true,
   },
 };
 
 const WEEKEND_TASK: Omit<DailyTask, "day"> = {
-  label: "週末",
-  title: "自由複習",
-  description: "沒有排定任務，建議自由複習本週已學內容。",
+  label: "Weekend",
+  title: "Free Review",
+  description: "No task scheduled — a good time for free review of what you've learned this week.",
   isCaseDay: false,
 };
 

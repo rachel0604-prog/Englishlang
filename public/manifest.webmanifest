@@ -1,12 +1,12 @@
 {
-  "name": "Vocab Case File",
-  "short_name": "Case File",
-  "description": "英語詞彙密卷 — 16 個月詞彙與商務英文訓練計畫",
+  "name": "LIZZAREA",
+  "short_name": "LIZZAREA",
+  "description": "A 16-month vocabulary and business English training program.",
   "start_url": "/today",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0f1729",
-  "theme_color": "#16213a",
+  "background_color": "#fffbf0",
+  "theme_color": "#eaf6fb",
   "icons": [
     {
       "src": "/icons/icon-192.png",

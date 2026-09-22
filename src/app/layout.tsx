@@ -17,8 +17,8 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Vocab Case File",
-  description: "英語詞彙密卷 — 16 個月詞彙與商務英文訓練計畫",
+  title: "LIZZAREA",
+  description: "A 16-month vocabulary and business English training program.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Case File",
+    statusBarStyle: "default",
+    title: "LIZZAREA",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#16213a",
+  themeColor: "#eaf6fb",
 };
 
 // The layout reads live settings (reminder times) on every request.
@@ -46,23 +46,23 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 
   return (
     <html
-      lang="zh-Hant"
+      lang="en"
       className={`${specialElite.variable} ${lora.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-navy-950 text-parchment-100">
-        <header className="border-b border-navy-700 bg-navy-900">
+      <body className="min-h-full flex flex-col bg-cream-50 text-ink">
+        <header className="border-b border-sky-300 bg-sky-50">
           <nav className="mx-auto flex max-w-2xl items-center gap-6 px-4 py-3">
-            <Link href="/" className="font-display text-sm tracking-wide">
+            <Link href="/" className="font-display text-sm tracking-wide text-sky-700">
               LIZZAREA
             </Link>
-            <Link href="/today" className="text-sm text-parchment-200 hover:text-accent">
-              今日任務
+            <Link href="/today" className="text-sm text-ink-muted hover:text-sky-600">
+              Today
             </Link>
-            <Link href="/admin" className="text-sm text-parchment-200 hover:text-accent">
-              管理
+            <Link href="/admin" className="text-sm text-ink-muted hover:text-sky-600">
+              Admin
             </Link>
-            <Link href="/settings" className="text-sm text-parchment-200 hover:text-accent">
-              設定
+            <Link href="/settings" className="text-sm text-ink-muted hover:text-sky-600">
+              Settings
             </Link>
           </nav>
         </header>
