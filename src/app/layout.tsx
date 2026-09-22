@@ -53,7 +53,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <header className="border-b border-navy-700 bg-navy-900">
           <nav className="mx-auto flex max-w-2xl items-center gap-6 px-4 py-3">
             <Link href="/" className="font-display text-sm tracking-wide">
-              CASE FILE
+              LIZZAREA
             </Link>
             <Link href="/today" className="text-sm text-parchment-200 hover:text-accent">
               今日任務
