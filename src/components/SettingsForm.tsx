@@ -90,7 +90,7 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
 
     setClearing(false);
     setClearConfirming(false);
-    setMessage(error ? `Clear failed: ${error.message}` : "All progress has been cleared.");
+    setMessage(error ? `Reset failed: ${error.message}` : "All progress has been reset.");
   }
 
   return (
@@ -146,23 +146,23 @@ export default function SettingsForm({ initialSettings }: { initialSettings: Set
         </p>
       </section>
 
-      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
-        <p className="font-display text-xs text-sky-700">Clear Progress</p>
+      <section className="rounded-lg border border-pink-300 bg-pink-100 p-5">
+        <p className="font-display text-xs text-pink-600">Reset</p>
         <p className="mt-2 text-sm text-ink-muted">
           Resets every round back to unsolved. This cannot be undone.
         </p>
         <button
           onClick={handleClearProgress}
           disabled={clearing}
-          className={`mt-3 rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50 ${
-            clearConfirming ? "bg-red-600 text-white" : "bg-sky-600 text-white"
+          className={`mt-3 rounded-md px-4 py-2 text-sm font-medium text-white disabled:opacity-50 ${
+            clearConfirming ? "bg-red-600" : "bg-pink-600"
           }`}
         >
           {clearing
-            ? "Clearing..."
+            ? "Resetting..."
             : clearConfirming
-              ? "Clear all progress? Click again to confirm"
-              : "Clear Progress"}
+              ? "Reset all progress? Click again to confirm"
+              : "Reset"}
         </button>
       </section>
 

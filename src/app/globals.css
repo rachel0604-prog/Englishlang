@@ -4,11 +4,29 @@
   --color-cream-50: #fffbf0;
   --color-cream-100: #fdf3d9;
   --color-cream-200: #f7e4b0;
+  --color-cream-600: #c9a13a;
+
   --color-sky-50: #eaf6fb;
   --color-sky-100: #d6eef9;
   --color-sky-300: #a8dcef;
   --color-sky-600: #2f97c4;
   --color-sky-700: #22738f;
+
+  --color-pink-50: #fdf1f5;
+  --color-pink-100: #fbe1ea;
+  --color-pink-300: #f3b8cd;
+  --color-pink-600: #d1699a;
+
+  --color-mint-50: #eefaf3;
+  --color-mint-100: #dff5ea;
+  --color-mint-300: #a9e2c4;
+  --color-mint-600: #379a72;
+
+  --color-lavender-50: #f4f0fb;
+  --color-lavender-100: #eae1f5;
+  --color-lavender-300: #cbb8e8;
+  --color-lavender-600: #7c5bb0;
+
   --color-ink: #2e4459;
   --color-ink-muted: #6b8194;
   --color-accent: var(--color-sky-600);
@@ -20,18 +38,38 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-cream-50: var(--color-cream-50);
   --color-cream-100: var(--color-cream-100);
   --color-cream-200: var(--color-cream-200);
+  --color-cream-600: var(--color-cream-600);
+
   --color-sky-50: var(--color-sky-50);
   --color-sky-100: var(--color-sky-100);
   --color-sky-300: var(--color-sky-300);
   --color-sky-600: var(--color-sky-600);
   --color-sky-700: var(--color-sky-700);
+
+  --color-pink-50: var(--color-pink-50);
+  --color-pink-100: var(--color-pink-100);
+  --color-pink-300: var(--color-pink-300);
+  --color-pink-600: var(--color-pink-600);
+
+  --color-mint-50: var(--color-mint-50);
+  --color-mint-100: var(--color-mint-100);
+  --color-mint-300: var(--color-mint-300);
+  --color-mint-600: var(--color-mint-600);
+
+  --color-lavender-50: var(--color-lavender-50);
+  --color-lavender-100: var(--color-lavender-100);
+  --color-lavender-300: var(--color-lavender-300);
+  --color-lavender-600: var(--color-lavender-600);
+
   --color-ink: var(--color-ink);
   --color-ink-muted: var(--color-ink-muted);
   --color-accent: var(--color-accent);
-  --font-display: var(--font-special-elite);
+
+  --font-display: var(--font-playfair-display);
   --font-body: var(--font-lora);
 }
 
@@ -45,6 +83,21 @@ h1,
 h2,
 h3,
 .font-display {
-  font-family: var(--font-display), monospace;
-  letter-spacing: 0.02em;
+  font-family: var(--font-display), serif;
+  letter-spacing: 0.01em;
+}
+
+a,
+button {
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    opacity 150ms ease,
+    transform 100ms ease;
+}
+
+button:active,
+a:active {
+  transform: scale(0.97);
 }

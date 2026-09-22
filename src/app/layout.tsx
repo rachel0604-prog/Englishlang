@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Special_Elite, Lora } from "next/font/google";
+import { Playfair_Display, Lora } from "next/font/google";
 import Link from "next/link";
 import ReminderChecker from "@/components/ReminderChecker";
 import { getSettings } from "@/lib/data";
 import "./globals.css";
 
-const specialElite = Special_Elite({
-  variable: "--font-special-elite",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
 });
 
 const lora = Lora({
@@ -47,7 +48,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${specialElite.variable} ${lora.variable} h-full antialiased`}
+      className={`${playfairDisplay.variable} ${lora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream-50 text-ink">
         <header className="border-b border-sky-300 bg-sky-50">

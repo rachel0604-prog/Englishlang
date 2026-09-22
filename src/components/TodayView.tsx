@@ -27,8 +27,8 @@ export default function TodayView({ todayTask, weekTasks, weekId }: TodayViewPro
         <p className="mt-2 text-sm">{selectedTask.description}</p>
       </section>
 
-      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
-        <p className="font-display text-xs text-sky-700">This Week&rsquo;s Schedule</p>
+      <section className="rounded-lg border border-lavender-300 bg-lavender-100 p-5">
+        <p className="font-display text-xs text-lavender-600">This Week&rsquo;s Schedule</p>
         <p className="mt-1 text-xs text-ink-muted">
           Tap any day to review or catch up on that day&rsquo;s task.
         </p>
@@ -37,17 +37,17 @@ export default function TodayView({ todayTask, weekTasks, weekId }: TodayViewPro
             <li key={task.day}>
               <button
                 onClick={() => setSelectedDay(task.day)}
-                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm ${
                   task.day === selectedDay
-                    ? "bg-sky-300 text-ink"
-                    : "text-ink-muted hover:bg-sky-50"
+                    ? "bg-lavender-300 text-ink"
+                    : "text-ink-muted hover:bg-lavender-50"
                 }`}
               >
-                <span className="font-display text-xs">
+                <span className="font-display shrink-0 text-xs">
                   {task.label}
                   {task.day === todayTask.day && " · Today"}
                 </span>
-                <span>{task.title}</span>
+                <span className="text-right flex-1">{task.title}</span>
               </button>
             </li>
           ))}
@@ -56,7 +56,7 @@ export default function TodayView({ todayTask, weekTasks, weekId }: TodayViewPro
         {weekId ? (
           <Link
             href={`/case/${weekId}`}
-            className="mt-4 inline-block rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white"
+            className="mt-4 inline-block rounded-md bg-lavender-600 px-4 py-2 text-sm font-medium text-white active:scale-[0.97]"
           >
             Start
           </Link>

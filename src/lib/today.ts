@@ -9,32 +9,32 @@ export interface DailyTask {
 const WEEKDAY_TASKS: Record<number, Omit<DailyTask, "day">> = {
   1: {
     label: "Monday",
-    title: "Close Reading & Word Circling",
-    description: "Read this week's article closely and circle unfamiliar words.",
+    title: "Close Reading & Vocabulary Annotation",
+    description: "Read this week's article closely and annotate unfamiliar vocabulary in context.",
     isCaseDay: false,
   },
   2: {
     label: "Tuesday",
-    title: "Root Word Breakdown",
-    description: "Break each word into its roots, prefixes, and suffixes; build an etymology note.",
+    title: "Word Formation & Root Analysis",
+    description: "Analyse each word's roots, prefixes, and suffixes, and build an etymology note.",
     isCaseDay: false,
   },
   3: {
     label: "Wednesday",
-    title: "Listening & Shadow Writing",
-    description: "Listen closely to this week's material and shadow-write the sentence patterns.",
+    title: "Intensive Listening & Pattern Writing",
+    description: "Listen closely to this week's material, then practise writing sentences that mirror its patterns.",
     isCaseDay: false,
   },
   4: {
     label: "Thursday",
-    title: "Spaced Review & Speaking Summary",
-    description: "Review earlier words on a spaced schedule and record a spoken summary of the theme.",
+    title: "Spaced Repetition Review & Oral Summary",
+    description: "Review earlier vocabulary on a spaced-repetition schedule, then record a spoken summary of this week's theme.",
     isCaseDay: false,
   },
   5: {
     label: "Friday",
-    title: "Writing & Case File",
-    description: "Finish a writing piece, then unlock this week's case file.",
+    title: "Writing Production & Case File",
+    description: "Complete a piece of writing, then unlock this week's case file.",
     isCaseDay: true,
   },
 };

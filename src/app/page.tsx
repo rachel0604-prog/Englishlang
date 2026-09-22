@@ -28,8 +28,8 @@ export default async function HomePage() {
         <p className="mt-1 text-sm text-ink-muted">Consecutive days solved</p>
       </section>
 
-      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
-        <p className="font-display text-xs text-sky-700">Words Learned</p>
+      <section className="rounded-lg border border-mint-300 bg-mint-100 p-5">
+        <p className="font-display text-xs text-mint-600">Words Learned</p>
         <p className="mt-1 text-3xl font-display text-ink">{totalWords} words</p>
         <p className="mt-1 text-sm text-ink-muted">Total words unlocked</p>
 
@@ -42,7 +42,7 @@ export default async function HomePage() {
             <>
               <div className="h-2 w-full overflow-hidden rounded-full bg-cream-200">
                 <div
-                  className="h-full rounded-full bg-sky-600 transition-all"
+                  className="h-full rounded-full bg-mint-600 transition-all"
                   style={{ width: `${milestone.percent}%` }}
                 />
               </div>
@@ -57,7 +57,7 @@ export default async function HomePage() {
               {milestone.achieved.map((m) => (
                 <span
                   key={m}
-                  className="rounded-full border border-sky-600 px-2 py-0.5 text-xs text-sky-700"
+                  className="rounded-full border border-mint-600 px-2 py-0.5 text-xs text-mint-600"
                 >
                   {m} words reached
                 </span>
@@ -68,7 +68,7 @@ export default async function HomePage() {
       </section>
 
       <section className="rounded-lg border border-cream-200 bg-cream-100 p-5 text-ink">
-        <p className="font-display text-xs text-sky-700">This Week&rsquo;s Case</p>
+        <p className="font-display text-xs text-cream-600">This Week&rsquo;s Case</p>
         {overview ? (
           <>
             <h1 className="mt-1 text-xl">
@@ -91,13 +91,13 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="rounded-lg border border-sky-300 bg-sky-100 p-5">
-        <p className="font-display text-xs text-sky-700">Today</p>
+      <section className="rounded-lg border border-pink-300 bg-pink-100 p-5">
+        <p className="font-display text-xs text-pink-600">Today</p>
         <h2 className="mt-1 text-lg text-ink">{todayTask.title}</h2>
         <p className="mt-1 text-sm text-ink-muted">{todayTask.description}</p>
         <Link
           href="/today"
-          className="mt-4 inline-block rounded-md bg-sky-600 px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 inline-block rounded-md bg-pink-600 px-4 py-2 text-sm font-medium text-white active:scale-[0.97]"
         >
           Go to Today&rsquo;s Task
         </Link>
