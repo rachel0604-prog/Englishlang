@@ -17,20 +17,6 @@ export default async function TodayPage() {
         <p className="font-display text-xs text-navy-800">{todayTask.label}</p>
         <h1 className="mt-1 text-xl">{todayTask.title}</h1>
         <p className="mt-2 text-sm">{todayTask.description}</p>
-
-        {todayTask.isCaseDay &&
-          (overview ? (
-            <Link
-              href={`/case/${overview.week.id}`}
-              className="mt-4 inline-block rounded-md bg-navy-800 px-4 py-2 text-sm font-medium text-parchment-100"
-            >
-              進入本週密卷
-            </Link>
-          ) : (
-            <p className="mt-4 text-sm text-navy-700">
-              尚無進行中的案件，請先於 <code>/admin</code> 匯入本週內容。
-            </p>
-          ))}
       </section>
 
       <section className="rounded-lg border border-navy-700 bg-navy-900 p-5">
@@ -50,6 +36,19 @@ export default async function TodayPage() {
             </li>
           ))}
         </ul>
+
+        {overview ? (
+          <Link
+            href={`/case/${overview.week.id}`}
+            className="mt-4 inline-block rounded-md bg-accent px-4 py-2 text-sm font-medium text-navy-950"
+          >
+            開始
+          </Link>
+        ) : (
+          <p className="mt-4 text-sm text-parchment-200">
+            尚無進行中的案件，請先於 <code>/admin</code> 匯入本週內容。
+          </p>
+        )}
       </section>
     </div>
   );
