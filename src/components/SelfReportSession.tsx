@@ -17,6 +17,7 @@ export default function SelfReportSession({
   const [isComplete, setIsComplete] = useState(initialProgress?.is_complete ?? false);
   const [saving, setSaving] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
+  const feedbackText = initialProgress?.feedback_text ?? null;
 
   async function save() {
     setSaving(true);
@@ -63,8 +64,9 @@ export default function SelfReportSession({
 
       <div className="flex flex-col gap-2">
         <label htmlFor="response" className="text-xs text-ink-muted">
-          Your response — write it here, then bring it to your chat with Claude for
-          correction and discussion.
+          Your response — write it here and save it. A one-off written review runs
+          automatically (usually within a few hours); for real back-and-forth discussion,
+          bring it to your chat with Claude directly.
         </label>
         <textarea
           id="response"
@@ -75,6 +77,13 @@ export default function SelfReportSession({
           placeholder="Type your words, sentences, or writing piece here..."
         />
       </div>
+
+      {feedbackText && (
+        <div className="rounded-lg border border-lavender-300 bg-lavender-100 p-5 text-ink">
+          <p className="font-display text-xs text-lavender-600">Feedback</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{feedbackText}</p>
+        </div>
+      )}
 
       {isComplete ? (
         <div className="flex items-center gap-3">

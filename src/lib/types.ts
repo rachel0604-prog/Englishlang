@@ -68,6 +68,7 @@ export interface Session {
   instructions: string;
   case_id: string | null;
   created_at: string;
+  generated_from_response_at: string | null;
 }
 
 export interface SessionProgress {
@@ -76,4 +77,5 @@ export interface SessionProgress {
   is_complete: boolean;
   completed_at: string | null;
   response_text: string | null;
+  feedback_text: string | null;
 }
