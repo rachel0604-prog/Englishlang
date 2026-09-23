@@ -75,4 +75,5 @@ export interface SessionProgress {
   session_id: string;
   is_complete: boolean;
   completed_at: string | null;
+  response_text: string | null;
 }
