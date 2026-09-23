@@ -1,5 +1,13 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import type { Case, Progress, Round, Settings, Week } from "@/lib/types";
+import type {
+  Case,
+  Progress,
+  Round,
+  Session,
+  SessionProgress,
+  Settings,
+  Week,
+} from "@/lib/types";
 
 const DEFAULT_SETTINGS: Settings = {
   id: 1,
@@ -29,24 +37,79 @@ export async function getWeekById(weekId: string): Promise<Week | null> {
   return data ?? null;
 }
 
-export async function getProgressForRounds(
-  roundIds: string[]
-): Promise<Progress[]> {
+export interface SessionWithStatus extends Session {
+  isComplete: boolean;
+  totalRounds?: number;
+  solvedRounds?: number;
+}
+
+const TIME_ORDER: Record<Session["time_of_day"], number> = { morning: 0, evening: 1 };
+
+/** All 10 sessions for a week, each annotated with completion status. */
+export async function getWeekSessionsWithStatus(weekId: string): Promise<SessionWithStatus[]> {
   const supabase = getSupabaseServerClient();
-  if (!supabase || roundIds.length === 0) return [];
+  if (!supabase) return [];
 
-  const { data } = await supabase
-    .from("progress")
-    .select("*")
-    .in("round_id", roundIds);
+  const { data: sessionsRaw } = await supabase.from("sessions").select("*").eq("week_id", weekId);
+  const sessions = (sessionsRaw ?? []).sort((a, b) =>
+    a.day_of_week !== b.day_of_week
+      ? a.day_of_week - b.day_of_week
+      : TIME_ORDER[a.time_of_day as Session["time_of_day"]] -
+        TIME_ORDER[b.time_of_day as Session["time_of_day"]]
+  );
 
-  return data ?? [];
+  if (sessions.length === 0) return [];
+
+  const caseIds = sessions.filter((s) => s.case_id).map((s) => s.case_id as string);
+  const sessionIds = sessions.map((s) => s.id);
+
+  const [{ data: rounds }, { data: sessionProgressRows }] = await Promise.all([
+    caseIds.length > 0
+      ? supabase.from("rounds").select("id, case_id").in("case_id", caseIds)
+      : Promise.resolve({ data: [] as Array<{ id: string; case_id: string }> }),
+    supabase.from("session_progress").select("*").in("session_id", sessionIds),
+  ]);
+
+  const roundIds = (rounds ?? []).map((r) => r.id);
+  const { data: progressRows } =
+    roundIds.length > 0
+      ? await supabase.from("progress").select("round_id, is_solved").in("round_id", roundIds)
+      : { data: [] as Array<{ round_id: string; is_solved: boolean }> };
+
+  const solvedRoundIds = new Set(
+    (progressRows ?? []).filter((p) => p.is_solved).map((p) => p.round_id)
+  );
+  const roundsByCase = new Map<string, string[]>();
+  for (const r of rounds ?? []) {
+    const arr = roundsByCase.get(r.case_id) ?? [];
+    arr.push(r.id);
+    roundsByCase.set(r.case_id, arr);
+  }
+  const selfProgressBySession = new Map(
+    (sessionProgressRows ?? []).map((sp) => [sp.session_id, sp as SessionProgress])
+  );
+
+  return sessions.map((s) => {
+    if (s.case_id) {
+      const roundIdsForCase = roundsByCase.get(s.case_id) ?? [];
+      const solved = roundIdsForCase.filter((id) => solvedRoundIds.has(id)).length;
+      return {
+        ...s,
+        totalRounds: roundIdsForCase.length,
+        solvedRounds: solved,
+        isComplete: roundIdsForCase.length > 0 && solved === roundIdsForCase.length,
+      };
+    }
+    const sp = selfProgressBySession.get(s.id);
+    return { ...s, isComplete: sp?.is_complete ?? false };
+  });
 }
 
 export interface WeekOverview {
   week: Week;
-  totalRounds: number;
-  solvedRounds: number;
+  totalSessions: number;
+  completedSessions: number;
+  sessions: SessionWithStatus[];
 }
 
 export async function getActiveWeekOverview(): Promise<WeekOverview | null> {
@@ -63,92 +126,96 @@ export async function getActiveWeekOverview(): Promise<WeekOverview | null> {
 
   if (!week) return null;
 
-  const { data: cases } = await supabase
-    .from("cases")
-    .select("id")
-    .eq("week_id", week.id);
+  const sessions = await getWeekSessionsWithStatus(week.id);
+  const completedSessions = sessions.filter((s) => s.isComplete).length;
 
-  const caseIds = (cases ?? []).map((c) => c.id);
-  if (caseIds.length === 0) {
-    return { week, totalRounds: 0, solvedRounds: 0 };
-  }
-
-  const { data: rounds } = await supabase
-    .from("rounds")
-    .select("id")
-    .in("case_id", caseIds);
-
-  const roundIds = (rounds ?? []).map((r) => r.id);
-  const totalRounds = roundIds.length;
-
-  let solvedRounds = 0;
-  if (roundIds.length > 0) {
-    const { count } = await supabase
-      .from("progress")
-      .select("id", { count: "exact", head: true })
-      .in("round_id", roundIds)
-      .eq("is_solved", true);
-    solvedRounds = count ?? 0;
-  }
-
-  return { week, totalRounds, solvedRounds };
+  return { week, totalSessions: sessions.length, completedSessions, sessions };
 }
 
-export async function getWeekCasesWithRounds(
-  weekId: string
-): Promise<Array<Case & { rounds: Round[] }>> {
+export interface SessionDetail {
+  session: Session;
+  caseData: (Case & { rounds: Round[] }) | null;
+  roundsProgress: Progress[];
+  selfProgress: SessionProgress | null;
+}
+
+export async function getSessionDetail(sessionId: string): Promise<SessionDetail | null> {
   const supabase = getSupabaseServerClient();
-  if (!supabase) return [];
+  if (!supabase) return null;
 
-  const { data: cases } = await supabase
-    .from("cases")
+  const { data: session } = await supabase
+    .from("sessions")
     .select("*")
-    .eq("week_id", weekId)
-    .order("case_title", { ascending: true });
+    .eq("id", sessionId)
+    .maybeSingle();
+  if (!session) return null;
 
-  if (!cases || cases.length === 0) return [];
+  if (session.case_id) {
+    const [{ data: caseRow }, { data: rounds }] = await Promise.all([
+      supabase.from("cases").select("*").eq("id", session.case_id).maybeSingle(),
+      supabase
+        .from("rounds")
+        .select("*")
+        .eq("case_id", session.case_id)
+        .order("order_index", { ascending: true }),
+    ]);
 
-  const { data: rounds } = await supabase
-    .from("rounds")
+    const roundIds = (rounds ?? []).map((r) => r.id);
+    const { data: progress } =
+      roundIds.length > 0
+        ? await supabase.from("progress").select("*").in("round_id", roundIds)
+        : { data: [] as Progress[] };
+
+    return {
+      session,
+      caseData: caseRow ? { ...caseRow, rounds: rounds ?? [] } : null,
+      roundsProgress: progress ?? [],
+      selfProgress: null,
+    };
+  }
+
+  const { data: selfProgress } = await supabase
+    .from("session_progress")
     .select("*")
-    .in(
-      "case_id",
-      cases.map((c) => c.id)
-    )
-    .order("order_index", { ascending: true });
+    .eq("session_id", sessionId)
+    .maybeSingle();
 
-  return cases.map((c) => ({
-    ...c,
-    rounds: (rounds ?? []).filter((r) => r.case_id === c.id),
-  }));
+  return { session, caseData: null, roundsProgress: [], selfProgress: selfProgress ?? null };
 }
 
-/** Consecutive-day streak counted back from today, based on solved_at dates. */
+/** Consecutive-day streak, based on either a solved round or a self-reported
+ * session completion on that day. */
 export async function getStreakDays(): Promise<number> {
   const supabase = getSupabaseServerClient();
   if (!supabase) return 0;
 
-  const { data } = await supabase
-    .from("progress")
-    .select("solved_at")
-    .eq("is_solved", true)
-    .not("solved_at", "is", null)
-    .order("solved_at", { ascending: false });
+  const [{ data: progressRows }, { data: sessionRows }] = await Promise.all([
+    supabase.from("progress").select("solved_at").eq("is_solved", true).not("solved_at", "is", null),
+    supabase
+      .from("session_progress")
+      .select("completed_at")
+      .eq("is_complete", true)
+      .not("completed_at", "is", null),
+  ]);
 
-  if (!data || data.length === 0) return 0;
+  const activeDates = new Set<string>();
+  for (const row of progressRows ?? []) {
+    activeDates.add(new Date(row.solved_at as string).toDateString());
+  }
+  for (const row of sessionRows ?? []) {
+    activeDates.add(new Date(row.completed_at as string).toDateString());
+  }
 
-  const solvedDates = new Set(
-    data.map((row) => new Date(row.solved_at as string).toDateString())
-  );
+  if (activeDates.size === 0) return 0;
 
   let streak = 0;
   const cursor = new Date();
-  // Allow today to be "not yet solved" without breaking the streak.
-  if (!solvedDates.has(cursor.toDateString())) {
+  // Allow today to be "not yet done" without breaking the streak.
+  if (!activeDates.has(cursor.toDateString())) {
     cursor.setDate(cursor.getDate() - 1);
   }
 
-  while (solvedDates.has(cursor.toDateString())) {
+  while (activeDates.has(cursor.toDateString())) {
     streak += 1;
     cursor.setDate(cursor.getDate() - 1);
   }
@@ -156,7 +223,7 @@ export async function getStreakDays(): Promise<number> {
   return streak;
 }
 
-/** Total words ever solved, across all weeks — not just the active one. */
+/** Total words ever solved via quiz-type sessions, across all weeks. */
 export async function getTotalWordsLearned(): Promise<number> {
   const supabase = getSupabaseServerClient();
   if (!supabase) return 0;

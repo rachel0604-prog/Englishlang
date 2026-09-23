@@ -9,8 +9,20 @@ const PLACEHOLDER = `{
   "week_number": 1,
   "theme_title": "Should Remote Work Become the Norm?",
   "source_note": "Adapted from a BBC/Economist article",
-  "cases": [
+  "sessions": [
     {
+      "day_of_week": 1,
+      "time_of_day": "morning",
+      "session_type": "reading",
+      "title": "Read a new article & circle unfamiliar words",
+      "instructions": "Read this week's article closely. Circle or note down every word you don't fully know."
+    },
+    {
+      "day_of_week": 1,
+      "time_of_day": "evening",
+      "session_type": "vocab_game",
+      "title": "Vocabulary Hunt",
+      "instructions": "Match each word to its meaning to unlock this session's code.",
       "case_title": "Case 01",
       "rounds": [
         {
@@ -44,8 +56,11 @@ export default function AdminPage() {
         <p className="font-display text-xs text-accent">ADMIN</p>
         <h1 className="text-lg">Import Content</h1>
         <p className="mt-1 text-sm text-ink-muted">
-          Paste this week&rsquo;s content JSON. Submitting writes it to the database and sets
-          this week to active.
+          Paste this week&rsquo;s content JSON — 10 sessions (5 weekdays × morning/evening).
+          Quiz-type sessions (vocab_game, root_context, logic_puzzle, spaced_review) need
+          case_title + rounds; every other type (reading, listening, rewrite, speaking,
+          writing_quiz) only needs instructions. Submitting writes it to the database and
+          sets this week to active.
         </p>
       </div>
 

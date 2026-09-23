@@ -44,3 +44,35 @@ export interface Settings {
   reminder_evening_time: string;
   push_subscription: Record<string, unknown> | null;
 }
+
+export type SessionTimeOfDay = "morning" | "evening";
+
+export type SessionType =
+  | "reading"
+  | "vocab_game"
+  | "root_context"
+  | "logic_puzzle"
+  | "listening"
+  | "rewrite"
+  | "spaced_review"
+  | "speaking"
+  | "writing_quiz";
+
+export interface Session {
+  id: string;
+  week_id: string;
+  day_of_week: number;
+  time_of_day: SessionTimeOfDay;
+  session_type: SessionType;
+  title: string;
+  instructions: string;
+  case_id: string | null;
+  created_at: string;
+}
+
+export interface SessionProgress {
+  id: string;
+  session_id: string;
+  is_complete: boolean;
+  completed_at: string | null;
+}

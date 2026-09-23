@@ -1,21 +1,21 @@
 import TodayView from "@/components/TodayView";
 import { getActiveWeekOverview } from "@/lib/data";
-import { getTodayTask, getWeekTaskList } from "@/lib/today";
 
 // Depends on the current date and live progress data — must not be frozen
-// at build time (a static build would show the build day's task forever).
+// at build time (a static build would show the build day's sessions forever).
 export const dynamic = "force-dynamic";
 
 export default async function TodayPage() {
-  const todayTask = getTodayTask();
   const overview = await getActiveWeekOverview();
-  const weekTasks = getWeekTaskList();
+  const todayDayOfWeek = new Date().getDay();
 
-  return (
-    <TodayView
-      todayTask={todayTask}
-      weekTasks={weekTasks}
-      weekId={overview?.week.id ?? null}
-    />
-  );
+  if (!overview) {
+    return (
+      <p className="text-sm text-ink-muted">
+        No active week yet. Import this week&rsquo;s content in <code>/admin</code>.
+      </p>
+    );
+  }
+
+  return <TodayView todayDayOfWeek={todayDayOfWeek} sessions={overview.sessions} />;
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getActiveWeekOverview, getStreakDays, getTotalWordsLearned } from "@/lib/data";
 import { getMilestoneProgress } from "@/lib/milestones";
-import { getTodayTask } from "@/lib/today";
+import { SESSION_TYPE_LABEL } from "@/lib/sessionTypes";
 
 // Reads live progress/streak data — must not be frozen at build time.
 export const dynamic = "force-dynamic";
@@ -12,13 +12,15 @@ export default async function HomePage() {
     getStreakDays(),
     getTotalWordsLearned(),
   ]);
-  const todayTask = getTodayTask();
   const milestone = getMilestoneProgress(totalWords);
+  const todayDayOfWeek = new Date().getDay();
 
   const percent =
-    overview && overview.totalRounds > 0
-      ? Math.round((overview.solvedRounds / overview.totalRounds) * 100)
+    overview && overview.totalSessions > 0
+      ? Math.round((overview.completedSessions / overview.totalSessions) * 100)
       : 0;
+
+  const todaySessions = overview?.sessions.filter((s) => s.day_of_week === todayDayOfWeek) ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,7 +70,7 @@ export default async function HomePage() {
       </section>
 
       <section className="rounded-lg border border-cream-200 bg-cream-100 p-5 text-ink">
-        <p className="font-display text-xs text-cream-600">This Week&rsquo;s Case</p>
+        <p className="font-display text-xs text-cream-600">This Week&rsquo;s Progress</p>
         {overview ? (
           <>
             <h1 className="mt-1 text-xl">
@@ -81,25 +83,36 @@ export default async function HomePage() {
               />
             </div>
             <p className="mt-2 text-sm">
-              {overview.solvedRounds} / {overview.totalRounds} rounds unlocked ({percent}%)
+              {overview.completedSessions} / {overview.totalSessions} sessions done ({percent}%)
             </p>
           </>
         ) : (
           <p className="mt-2 text-sm">
-            No active case yet. Import this week&rsquo;s content in <code>/admin</code>.
+            No active week yet. Import this week&rsquo;s content in <code>/admin</code>.
           </p>
         )}
       </section>
 
       <section className="rounded-lg border border-pink-300 bg-pink-100 p-5">
         <p className="font-display text-xs text-pink-600">Today</p>
-        <h2 className="mt-1 text-lg text-ink">{todayTask.title}</h2>
-        <p className="mt-1 text-sm text-ink-muted">{todayTask.description}</p>
+        {todaySessions.length > 0 ? (
+          <ul className="mt-1 flex flex-col gap-1">
+            {todaySessions.map((s) => (
+              <li key={s.id} className="text-sm text-ink">
+                {s.time_of_day === "morning" ? "Morning" : "Evening"} — {s.title}{" "}
+                <span className="text-ink-muted">({SESSION_TYPE_LABEL[s.session_type]})</span>{" "}
+                {s.isComplete && <span className="text-mint-600">✓</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 text-sm text-ink-muted">No sessions scheduled for today.</p>
+        )}
         <Link
           href="/today"
           className="mt-4 inline-block rounded-md bg-pink-600 px-4 py-2 text-sm font-medium text-white active:scale-[0.97]"
         >
-          Go to Today&rsquo;s Task
+          Go to Today&rsquo;s Sessions
         </Link>
       </section>
     </div>

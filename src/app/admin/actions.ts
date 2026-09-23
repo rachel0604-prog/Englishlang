@@ -38,7 +38,7 @@ export async function submitWeekContent(
     const result = await importWeekContent(validation.value);
     return {
       status: "success",
-      message: `Imported Week ${validation.value.week_number}: ${result.caseCount} case(s), ${result.roundCount} round(s) total. Status set to active.`,
+      message: `Imported Week ${validation.value.week_number}: ${result.sessionCount} session(s), ${result.roundCount} round(s) total. Status set to active.`,
     };
   } catch (err) {
     return {
